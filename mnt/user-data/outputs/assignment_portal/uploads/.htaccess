@@ -1,0 +1,7 @@
+# Block direct browser access to upload folder
+Order deny,allow
+Deny from all
+<FilesMatch "\.php$">
+    Order deny,allow
+    Deny from all
+</FilesMatch>

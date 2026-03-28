@@ -1,0 +1,12 @@
+# ── Root .htaccess – Assignment Portal ──────────────────────
+RewriteEngine On
+RewriteBase /ass/
+
+# Block direct access to sensitive directories
+RewriteRule ^includes(/|$) - [F,L]
+RewriteRule ^uploads(/|$)  - [F,L]
+
+# Route /public/pagename (no extension) → /public/pagename.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^public/([^./]+)$ public/$1.php [L,QSA]

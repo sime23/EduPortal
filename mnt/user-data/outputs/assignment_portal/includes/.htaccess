@@ -1,0 +1,3 @@
+# Block all web access to includes/
+Order deny,allow
+Deny from all
