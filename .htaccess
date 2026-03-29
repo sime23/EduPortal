@@ -7,22 +7,22 @@ RewriteRule ^includes(/|$) - [F,L]
 RewriteRule ^uploads(/|$)  - [F,L]
 
 # ── 301 Canonical: strip .php from the browser address bar ───────────────────
-# /ass/public/admin/anything.php  →  /ass/admin
-RewriteCond %{THE_REQUEST} \s/+ass/public/admin/[^/?]+\.php [NC]
+# /ass/admin/anything.php  →  /ass/admin
+RewriteCond %{THE_REQUEST} \s/+ass/admin/[^/?]+\.php [NC]
 RewriteRule ^ /ass/admin [R=301,L]
 
-# /ass/public/X.php  →  /ass/X
-RewriteCond %{THE_REQUEST} \s/+ass/public/([^/?]+)\.php [NC]
+# /ass/X.php  →  /ass/X
+RewriteCond %{THE_REQUEST} \s/+ass/([^/?]+)\.php [NC]
 RewriteRule ^ /ass/%1 [R=301,L]
 
 # ── Internal routing: clean URL → PHP file ────────────────────────────────────
 # Root /ass/  →  login page
-RewriteRule ^$ public/index.php [L]
+RewriteRule ^$ index.php [L]
 
-# /ass/admin  →  public/admin/index.php
-RewriteRule ^admin/?$ public/admin/index.php [L,QSA]
+# /ass/admin  →  admin/index.php
+RewriteRule ^admin/?$ admin/index.php [L,QSA]
 
-# /ass/X  →  public/X.php  (dashboard, grades, manage, submit, etc.)
+# /ass/X  →  X.php  (dashboard, grades, manage, submit, etc.)
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^([a-zA-Z0-9_-]+)$ public/$1.php [L,QSA]
+RewriteRule ^([a-zA-Z0-9_-]+)$ $1.php [L,QSA]

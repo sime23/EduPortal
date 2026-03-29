@@ -6,8 +6,8 @@
  * by `.htaccess` (Require all denied) to prevent unauthorized access.
  */
 session_start();
-require_once '../includes/db.php';
-require_once '../includes/check_auth.php';
+require_once 'includes/db.php';
+require_once 'includes/check_auth.php';
 
 $file = $_GET['file'] ?? '';
 $type = $_GET['type'] ?? '';

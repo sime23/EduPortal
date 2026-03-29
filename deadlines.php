@@ -7,8 +7,8 @@
  * Includes a simple calendar widget for the current month.
  */
 session_start();
-require_once '../includes/db.php';
-require_once '../includes/check_auth.php';
+require_once 'includes/db.php';
+require_once 'includes/check_auth.php';
 
 $userId = $user['id'];
 $role   = $user['role'];
@@ -89,7 +89,7 @@ $monthName = $firstDay->format('F Y');
 </head>
 <body>
 <div class="app-shell">
-    <?php require_once '../includes/header.php'; ?>
+    <?php require_once 'includes/header.php'; ?>
 
     <main class="main-content">
         <div class="page-header">

@@ -17,9 +17,9 @@ $user = $_SESSION['user'] ?? null;
         <p style="color:var(--text-secondary);margin-bottom:2rem">You don't have permission to access this page. This area is restricted to specific roles.</p>
         
         <?php if ($user): ?>
-            <a href="/ass/public/dashboard.php" class="btn btn-primary">Return to Dashboard</a>
+            <a href="/ass/dashboard" class="btn btn-primary">Return to Dashboard</a>
         <?php else: ?>
-            <a href="/ass/public/index.php" class="btn btn-primary">Go to Login</a>
+            <a href="/ass/" class="btn btn-primary">Go to Login</a>
         <?php endif; ?>
     </div>
 </body>

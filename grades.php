@@ -6,8 +6,8 @@
  * Teachers: Grade submissions; add/edit grade + feedback.
  */
 session_start();
-require_once '../includes/db.php';
-require_once '../includes/check_auth.php';
+require_once 'includes/db.php';
+require_once 'includes/check_auth.php';
 
 $role   = $user['role'];
 $userId = $user['id'];
@@ -228,7 +228,7 @@ function gradeClass(?string $grade): string {
 </head>
 <body>
 <div class="app-shell">
-    <?php require_once '../includes/header.php'; ?>
+    <?php require_once 'includes/header.php'; ?>
 
     <main class="main-content">
         <div class="page-header">

@@ -7,8 +7,8 @@
  * Uses PDO prepared statements throughout.
  */
 session_start();
-require_once '../includes/db.php';
-require_once '../includes/check_auth.php';
+require_once 'includes/db.php';
+require_once 'includes/check_auth.php';
 
 // Only students can submit work
 enforceRole('student');
@@ -132,7 +132,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
 <div class="app-shell">
-    <?php require_once '../includes/header.php'; ?>
+    <?php require_once 'includes/header.php'; ?>
 
     <main class="main-content">
         <div class="page-header">
