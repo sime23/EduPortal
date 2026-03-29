@@ -26,7 +26,7 @@ if (isset($_GET['delete'])) {
     if (!$isAdmin) $params[':uid'] = $userId;
     
     $delStmt->execute($params);
-    header('Location: /ass/manage?success=Assignment+deleted');
+    header('Location: /manage?success=Assignment+deleted');
     exit;
 }
 
@@ -176,7 +176,7 @@ if (isset($_GET['success'])) $success = $_GET['success'];
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Assignments – EduPortal</title>
-    <link rel="stylesheet" href="/ass/assets/style.css">
+    <link rel="stylesheet" href="/assets/style.css">
 </head>
 <body>
 <div class="app-shell">
@@ -199,7 +199,7 @@ if (isset($_GET['success'])) $success = $_GET['success'];
                     <?= $editAssignment ? 'Edit Assignment' : 'New Assignment' ?>
                 </div>
 
-                <form method="POST" action="/ass/manage" enctype="multipart/form-data">
+                <form method="POST" action="/manage" enctype="multipart/form-data">
                     <input type="hidden" name="action" value="<?= $editAssignment ? 'edit' : 'create' ?>">
                     <?php if ($editAssignment): ?>
                         <input type="hidden" name="assign_id" value="<?= (int)$editAssignment['id'] ?>">
@@ -238,7 +238,7 @@ if (isset($_GET['success'])) $success = $_GET['success'];
                         <label class="form-label" for="attachment">Attachment File (Optional, Max 2MB)</label>
                         <input type="file" name="attachment" id="attachment" class="form-control" style="font-size: 0.85rem;" onchange="if(this.files[0].size > 2 * 1024 * 1024) { alert('File is too large! Maximum size is 2MB.'); this.value = ''; }">
                         <?php if ($editAssignment && !empty($editAssignment['attachment'])): ?>
-                            <span class="form-hint">Current: <a href="/ass/download?file=<?= urlencode($editAssignment['attachment']) ?>&type=assignment" target="_blank">Download</a>. Uploading a new file will overwrite it.</span>
+                            <span class="form-hint">Current: <a href="/download?file=<?= urlencode($editAssignment['attachment']) ?>&type=assignment" target="_blank">Download</a>. Uploading a new file will overwrite it.</span>
                         <?php else: ?>
                             <span class="form-hint">Provide any PDFs, documents, or zips needed for the assignment.</span>
                         <?php endif; ?>
@@ -248,7 +248,7 @@ if (isset($_GET['success'])) $success = $_GET['success'];
                         <label class="form-label" for="master_correction_file">Master Correction File (Optional)</label>
                         <input type="file" name="master_correction_file" id="master_correction_file" class="form-control" style="font-size: 0.85rem;" onchange="if(this.files[0].size > 10 * 1024 * 1024) { alert('File is too large! Maximum size is 10MB.'); this.value = ''; }">
                         <?php if ($editAssignment && !empty($editAssignment['master_correction'])): ?>
-                            <span class="form-hint">Current: <a href="/ass/download?file=<?= urlencode($editAssignment['master_correction']) ?>&type=master_correction" target="_blank">Download Master Correction</a>. Uploading a new file will overwrite it.</span>
+                            <span class="form-hint">Current: <a href="/download?file=<?= urlencode($editAssignment['master_correction']) ?>&type=master_correction" target="_blank">Download Master Correction</a>. Uploading a new file will overwrite it.</span>
                         <?php else: ?>
                             <span class="form-hint">Visible to all students ONLY after the deadline has passed.</span>
                         <?php endif; ?>
@@ -264,7 +264,7 @@ if (isset($_GET['success'])) $success = $_GET['success'];
 
                     <div style="display:flex;gap:.75rem">
                         <?php if ($editAssignment): ?>
-                            <a href="/ass/manage" class="btn btn-secondary">Cancel</a>
+                            <a href="/manage" class="btn btn-secondary">Cancel</a>
                         <?php endif; ?>
                         <button type="submit" class="btn btn-primary" style="flex:1">
                             <?= $editAssignment ? 'Update Assignment' : '+ Create Assignment' ?>
@@ -305,13 +305,13 @@ if (isset($_GET['success'])) $success = $_GET['success'];
                                 </p>
                                 <?php if (!empty($a['attachment'])): ?>
                                     <div style="margin-top: 0.5rem; font-size: 0.8rem;">
-                                        📄 <a href="/ass/download?file=<?= urlencode($a['attachment']) ?>&type=assignment" target="_blank" style="color: var(--primary); font-weight: 500;">View Attachment</a>
+                                        📄 <a href="/download?file=<?= urlencode($a['attachment']) ?>&type=assignment" target="_blank" style="color: var(--primary); font-weight: 500;">View Attachment</a>
                                     </div>
                                 <?php endif; ?>
                             </div>
                             <div style="display:flex;gap:.5rem;flex-shrink:0">
-                                <a href="/ass/manage?edit=<?= (int)$a['id'] ?>" class="btn btn-secondary btn-sm">Edit</a>
-                                <a href="/ass/manage?delete=<?= (int)$a['id'] ?>" class="btn btn-danger btn-sm"
+                                <a href="/manage?edit=<?= (int)$a['id'] ?>" class="btn btn-secondary btn-sm">Edit</a>
+                                <a href="/manage?delete=<?= (int)$a['id'] ?>" class="btn btn-danger btn-sm"
                                    onclick="return confirm('Delete this assignment and all its submissions?')">Delete</a>
                             </div>
                         </div>

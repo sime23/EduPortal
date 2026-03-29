@@ -10,7 +10,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 $user = $_SESSION['user'] ?? null;
 if (!isset($_SESSION['user_id']) || !$user) {
-    header('Location: /ass/');
+    header('Location: /');
     exit;
 }
 
@@ -28,7 +28,7 @@ function enforceRole($allowedRoles) {
     
     if (!in_array($role, $allowedRoles, true)) {
         // Redirect to 403 Forbidden page
-        header('Location: /ass/403');
+        header('Location: /403');
         exit;
     }
 }

@@ -8,7 +8,7 @@ $user = $_SESSION['user'] ?? null;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>403 Forbidden – EduPortal</title>
-    <link rel="stylesheet" href="/ass/assets/style.css">
+    <link rel="stylesheet" href="/assets/style.css">
 </head>
 <body style="display:flex;align-items:center;justify-content:center;height:100vh;background:var(--bg-light)">
     <div class="card" style="max-width:480px;text-align:center;padding:3rem 2rem">
@@ -17,9 +17,9 @@ $user = $_SESSION['user'] ?? null;
         <p style="color:var(--text-secondary);margin-bottom:2rem">You don't have permission to access this page. This area is restricted to specific roles.</p>
         
         <?php if ($user): ?>
-            <a href="/ass/dashboard" class="btn btn-primary">Return to Dashboard</a>
+            <a href="/dashboard" class="btn btn-primary">Return to Dashboard</a>
         <?php else: ?>
-            <a href="/ass/" class="btn btn-primary">Go to Login</a>
+            <a href="/" class="btn btn-primary">Go to Login</a>
         <?php endif; ?>
     </div>
 </body>

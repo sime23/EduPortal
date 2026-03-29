@@ -71,7 +71,7 @@ $dbUser = $stmt->fetch();
 if (!$dbUser) {
     // If the database was reset but the session remained, log them out
     session_destroy();
-    header('Location: /ass/');
+    header('Location: /');
     exit;
 }
 
@@ -83,7 +83,7 @@ $initials = strtoupper(substr($dbUser['full_name'], 0, 1));
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile – EduPortal</title>
-    <link rel="stylesheet" href="/ass/assets/style.css">
+    <link rel="stylesheet" href="/assets/style.css">
 </head>
 <body>
 <div class="app-shell">
@@ -110,7 +110,7 @@ $initials = strtoupper(substr($dbUser['full_name'], 0, 1));
                     </span>
                 </div>
 
-                <form method="POST" action="/ass/profile" novalidate>
+                <form method="POST" action="/profile" novalidate>
                     <div class="form-group">
                         <label class="form-label" for="full_name">Full Name</label>
                         <input type="text" name="full_name" id="full_name" class="form-control"

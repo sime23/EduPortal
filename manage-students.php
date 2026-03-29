@@ -258,7 +258,7 @@ function renderStudentRow(array $student, int $classId): void { ?>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Students - EduPortal</title>
-    <link rel="stylesheet" href="/ass/assets/style.css">
+    <link rel="stylesheet" href="/assets/style.css">
     <style>
         .class-card {
             background: white;

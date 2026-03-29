@@ -44,22 +44,22 @@ $icons = [
     <div class="sidebar-nav">
         <p class="nav-section-label">Main Menu</p>
         <?php if ($role === 'admin'): ?>
-            <?= navLink('/ass/admin',            $icons['admin'],    'Admin Panel',        $currentPage, 'index') ?>
-            <?= navLink('/ass/dashboard',         $icons['dashboard'], 'Main Dashboard',    $currentPage, 'dashboard') ?>
+            <?= navLink('/admin',            $icons['admin'],    'Admin Panel',        $currentPage, 'index') ?>
+            <?= navLink('/dashboard',         $icons['dashboard'], 'Main Dashboard',    $currentPage, 'dashboard') ?>
         <?php elseif ($role === 'student'): ?>
-            <?= navLink('/ass/dashboard',  $icons['dashboard'], 'Dashboard',         $currentPage, 'dashboard') ?>
-            <?= navLink('/ass/deadlines',  $icons['calendar'], 'Deadlines',          $currentPage, 'deadlines') ?>
-            <?= navLink('/ass/grades',     $icons['grades'],   'My Grades',          $currentPage, 'grades') ?>
+            <?= navLink('/dashboard',  $icons['dashboard'], 'Dashboard',         $currentPage, 'dashboard') ?>
+            <?= navLink('/deadlines',  $icons['calendar'], 'Deadlines',          $currentPage, 'deadlines') ?>
+            <?= navLink('/grades',     $icons['grades'],   'My Grades',          $currentPage, 'grades') ?>
         <?php else: ?>
-            <?= navLink('/ass/dashboard',        $icons['dashboard'], 'Dashboard',         $currentPage, 'dashboard') ?>
-            <?= navLink('/ass/manage',            $icons['manage'],   'Manage Assignments', $currentPage, 'manage') ?>
-            <?= navLink('/ass/manage-students',   $icons['profile'],  'Manage Students',    $currentPage, 'manage-students') ?>
-            <?= navLink('/ass/deadlines',         $icons['calendar'], 'Deadlines',          $currentPage, 'deadlines') ?>
-            <?= navLink('/ass/grades',            $icons['grades'],   'Grade Work',         $currentPage, 'grades') ?>
+            <?= navLink('/dashboard',        $icons['dashboard'], 'Dashboard',         $currentPage, 'dashboard') ?>
+            <?= navLink('/manage',            $icons['manage'],   'Manage Assignments', $currentPage, 'manage') ?>
+            <?= navLink('/manage-students',   $icons['profile'],  'Manage Students',    $currentPage, 'manage-students') ?>
+            <?= navLink('/deadlines',         $icons['calendar'], 'Deadlines',          $currentPage, 'deadlines') ?>
+            <?= navLink('/grades',            $icons['grades'],   'Grade Work',         $currentPage, 'grades') ?>
         <?php endif; ?>
         <p class="nav-section-label" style="margin-top:1.5rem;">Account</p>
-        <?= navLink('/ass/profile', $icons['profile'], 'Profile', $currentPage, 'profile') ?>
-        <a href="/ass/logout" class="logout-link"><?= $icons['logout'] ?><span>Logout</span></a>
+        <?= navLink('/profile', $icons['profile'], 'Profile', $currentPage, 'profile') ?>
+        <a href="/logout" class="logout-link"><?= $icons['logout'] ?><span>Logout</span></a>
     </div>
 </nav>
 <header class="mobile-header">

@@ -74,7 +74,7 @@ if ($role === 'student') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard – EduPortal</title>
-    <link rel="stylesheet" href="/ass/assets/style.css">
+    <link rel="stylesheet" href="/assets/style.css">
 </head>
 <body>
 <div class="app-shell">
@@ -190,7 +190,7 @@ if ($role === 'student') {
 
                 <?php if (!empty($a['attachment'])): ?>
                     <div style="margin-bottom: 0.75rem;">
-                        <a href="/ass/download?file=<?= urlencode($a['attachment']) ?>&type=assignment" class="btn btn-sm" style="background: rgba(37,99,235,0.1); color: var(--primary); padding: 0.25rem 0.6rem; text-decoration: none;" target="_blank">
+                        <a href="/download?file=<?= urlencode($a['attachment']) ?>&type=assignment" class="btn btn-sm" style="background: rgba(37,99,235,0.1); color: var(--primary); padding: 0.25rem 0.6rem; text-decoration: none;" target="_blank">
                             📄 Download Attachment
                         </a>
                     </div>
@@ -198,7 +198,7 @@ if ($role === 'student') {
 
                 <?php if ($role === 'student' && !empty($a['correction_path'])): ?>
                     <div style="margin-bottom: 0.75rem;">
-                        <a href="/ass/download?file=<?= urlencode($a['correction_path']) ?>&type=correction" class="btn btn-sm" style="background: var(--success-bg); color: var(--success); border: 1px solid var(--success); padding: 0.25rem 0.6rem; text-decoration: none;" target="_blank">
+                        <a href="/download?file=<?= urlencode($a['correction_path']) ?>&type=correction" class="btn btn-sm" style="background: var(--success-bg); color: var(--success); border: 1px solid var(--success); padding: 0.25rem 0.6rem; text-decoration: none;" target="_blank">
                             📥 Download My Correction
                         </a>
                     </div>
@@ -206,7 +206,7 @@ if ($role === 'student') {
 
                 <?php if ($isPast && !empty($a['master_correction'])): ?>
                     <div style="margin-bottom: 0.75rem;">
-                        <a href="/ass/download?file=<?= urlencode($a['master_correction']) ?>&type=master_correction" class="btn btn-sm" style="background: var(--cyan); color: white; padding: 0.25rem 0.6rem; text-decoration: none;" target="_blank">
+                        <a href="/download?file=<?= urlencode($a['master_correction']) ?>&type=master_correction" class="btn btn-sm" style="background: var(--cyan); color: white; padding: 0.25rem 0.6rem; text-decoration: none;" target="_blank">
                             🌟 Master Correction (Available Now)
                         </a>
                     </div>

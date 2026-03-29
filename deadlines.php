@@ -67,7 +67,7 @@ $monthName = $firstDay->format('F Y');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Deadlines – EduPortal</title>
-    <link rel="stylesheet" href="/ass/assets/style.css">
+    <link rel="stylesheet" href="/assets/style.css">
     <style>
         /* Mini calendar */
         .mini-calendar { background:var(--white); border-radius:var(--radius-lg); padding:1.25rem; box-shadow:var(--shadow-sm); border:1px solid var(--border-light); }

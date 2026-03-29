@@ -199,7 +199,7 @@ function gradeClass(?string $grade): string {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $role === 'student' ? 'My Grades' : 'Grade Work' ?> – EduPortal</title>
-    <link rel="stylesheet" href="/ass/assets/style.css">
+    <link rel="stylesheet" href="/assets/style.css">
     <style>
         .grade-modal-backdrop { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:2000; align-items:center; justify-content:center; }
         .grade-modal-backdrop.open { display:flex; }
@@ -276,7 +276,7 @@ function gradeClass(?string $grade): string {
                                         <?php endif; ?>
                                         <?php if ($r['correction_path']): ?>
                                             <div style="margin-top: 0.5rem">
-                                                <a href="/ass/download?file=<?= urlencode($r['correction_path']) ?>&type=correction" class="btn btn-secondary btn-xs" style="background:var(--success-bg); color:var(--success); border-color:var(--success);">
+                                                <a href="/download?file=<?= urlencode($r['correction_path']) ?>&type=correction" class="btn btn-secondary btn-xs" style="background:var(--success-bg); color:var(--success); border-color:var(--success);">
                                                     📥 Download Teacher's Correction
                                                 </a>
                                             </div>
@@ -352,7 +352,7 @@ function gradeClass(?string $grade): string {
                                                             </td>
                                                             <td class="text-muted"><?= date('M j, Y', strtotime($sub['submitted_at'])) ?></td>
                                                             <td>
-                                                                <a href="/ass/download?file=<?= urlencode($sub['file_path']) ?>&type=submission" class="btn btn-secondary btn-xs" target="_blank">Download</a>
+                                                                <a href="/download?file=<?= urlencode($sub['file_path']) ?>&type=submission" class="btn btn-secondary btn-xs" target="_blank">Download</a>
                                                             </td>
                                                             <td>
                                                                 <?php if ($isGraded): ?>
@@ -407,7 +407,7 @@ function gradeClass(?string $grade): string {
                 <div class="grade-modal">
                     <button class="modal-close" onclick="closeModal()" aria-label="Close">✕</button>
                     <h3 id="modalTitle">Grade Submission</h3>
-                    <form method="POST" action="/ass/grades" enctype="multipart/form-data">
+                    <form method="POST" action="/grades" enctype="multipart/form-data">
                         <input type="hidden" name="action" value="grade">
                         <input type="hidden" name="submission_id" id="modalSubId">
                         <div class="form-group">
@@ -436,7 +436,7 @@ function gradeClass(?string $grade): string {
                     <div class="modal-icon">🗑️</div>
                     <h3>Delete Submission?</h3>
                     <p id="deleteModalMsg">This will permanently remove the student's submitted file and all associated data. This action cannot be undone.</p>
-                    <form method="POST" action="/ass/grades" id="deleteForm">
+                    <form method="POST" action="/grades" id="deleteForm">
                         <input type="hidden" name="action" value="delete">
                         <input type="hidden" name="submission_id" id="deleteSubId">
                         <div style="display:flex;gap:.75rem;justify-content:center">
@@ -453,7 +453,7 @@ function gradeClass(?string $grade): string {
                     <div class="modal-icon">📄</div>
                     <h3>Remove Correction File?</h3>
                     <p id="deleteCorrModalMsg">This will permanently delete the uploaded correction file for this student. The grade and feedback will stay. This action cannot be undone.</p>
-                    <form method="POST" action="/ass/grades">
+                    <form method="POST" action="/grades">
                         <input type="hidden" name="action" value="delete_correction">
                         <input type="hidden" name="submission_id" id="deleteCorrSubId">
                         <div style="display:flex;gap:.75rem;justify-content:center">
