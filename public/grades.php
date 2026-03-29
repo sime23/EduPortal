@@ -16,43 +16,107 @@ $error  = '';
 $success = '';
 
 // ── Teacher POST: Save grade & feedback ─────────────────────
-if ($role === 'teacher' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+if (($role === 'teacher' || $isAdmin) && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    $action       = $_POST['action'] ?? 'grade';
     $submissionId = (int)($_POST['submission_id'] ?? 0);
-    $grade        = trim($_POST['grade']    ?? '');
-    $feedback     = trim($_POST['feedback'] ?? '');
 
-    if ($submissionId > 0 && $grade !== '') {
-        $correctionPath = null;
-        
-        // Handle correction file upload
-        if (isset($_FILES['correction_file']) && $_FILES['correction_file']['error'] === UPLOAD_ERR_OK) {
-            $file = $_FILES['correction_file'];
-            $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-            if (in_array($ext, ['pdf', 'docx', 'doc', 'zip'])) {
-                $newName = 'corr_' . $submissionId . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
-                $targetDir = __DIR__ . '/../uploads/corrections/';
-                if (!is_dir($targetDir)) mkdir($targetDir, 0777, true);
-                if (move_uploaded_file($file['tmp_name'], $targetDir . $newName)) {
-                    $correctionPath = $newName;
+    // ── DELETE a graded submission ────────────────────────────
+    if ($action === 'delete' && $submissionId > 0) {
+        // Verify the submission is graded and belongs to one of this teacher's assignments
+        $check = $pdo->prepare('
+            SELECT s.id, s.file_path, s.correction_path
+            FROM   submissions s
+            JOIN   assignments a ON a.id = s.assignment_id
+            WHERE  s.id = :id
+              AND  s.grade IS NOT NULL AND s.grade != ""
+              ' . ($isAdmin ? '' : 'AND a.created_by = :uid') . '
+            LIMIT 1
+        ');
+        $checkParams = [':id' => $submissionId];
+        if (!$isAdmin) $checkParams[':uid'] = $userId;
+        $check->execute($checkParams);
+        $target = $check->fetch();
+
+        if ($target) {
+            // Remove physical files
+            $subFile  = __DIR__ . '/../uploads/submissions/' . $target['file_path'];
+            $corrFile = $target['correction_path']
+                        ? __DIR__ . '/../uploads/corrections/' . $target['correction_path']
+                        : null;
+            if (file_exists($subFile))  @unlink($subFile);
+            if ($corrFile && file_exists($corrFile)) @unlink($corrFile);
+
+            // Delete DB record
+            $pdo->prepare('DELETE FROM submissions WHERE id = :id')->execute([':id' => $submissionId]);
+            $success = 'Submission deleted successfully.';
+        } else {
+            $error = 'Cannot delete: submission not found, not graded, or not yours.';
+        }
+
+    // ── DELETE only the correction file ────────────────────────
+    } elseif ($action === 'delete_correction' && $submissionId > 0) {
+        $check = $pdo->prepare('
+            SELECT s.id, s.correction_path
+            FROM   submissions s
+            JOIN   assignments a ON a.id = s.assignment_id
+            WHERE  s.id = :id
+              AND  s.correction_path IS NOT NULL
+              ' . ($isAdmin ? '' : 'AND a.created_by = :uid') . '
+            LIMIT 1
+        ');
+        $checkParams = [':id' => $submissionId];
+        if (!$isAdmin) $checkParams[':uid'] = $userId;
+        $check->execute($checkParams);
+        $target = $check->fetch();
+
+        if ($target) {
+            $corrFile = __DIR__ . '/../uploads/corrections/' . $target['correction_path'];
+            if (file_exists($corrFile)) @unlink($corrFile);
+            $pdo->prepare('UPDATE submissions SET correction_path = NULL WHERE id = :id')
+                ->execute([':id' => $submissionId]);
+            $success = 'Correction file removed successfully.';
+        } else {
+            $error = 'Correction not found or not yours.';
+        }
+
+    // ── GRADE / update a submission ───────────────────────────
+    } else {
+        $grade    = trim($_POST['grade']    ?? '');
+        $feedback = trim($_POST['feedback'] ?? '');
+
+        if ($submissionId > 0 && $grade !== '') {
+            $correctionPath = null;
+
+            // Handle correction file upload
+            if (isset($_FILES['correction_file']) && $_FILES['correction_file']['error'] === UPLOAD_ERR_OK) {
+                $file = $_FILES['correction_file'];
+                $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+                if (in_array($ext, ['pdf', 'docx', 'doc', 'zip'])) {
+                    $newName = 'corr_' . $submissionId . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
+                    $targetDir = __DIR__ . '/../uploads/corrections/';
+                    if (!is_dir($targetDir)) mkdir($targetDir, 0777, true);
+                    if (move_uploaded_file($file['tmp_name'], $targetDir . $newName)) {
+                        $correctionPath = $newName;
+                    }
                 }
             }
-        }
 
-        // Update grade, feedback, and correction_path for this submission
-        $sql = 'UPDATE submissions SET grade = :grade, feedback = :feedback';
-        $params = [':grade' => $grade, ':feedback' => $feedback, ':id' => $submissionId];
-        
-        if ($correctionPath) {
-            $sql .= ', correction_path = :corr';
-            $params[':corr'] = $correctionPath;
-        }
-        $sql .= ' WHERE id = :id';
+            // Update grade, feedback, and correction_path for this submission
+            $sql = 'UPDATE submissions SET grade = :grade, feedback = :feedback';
+            $params = [':grade' => $grade, ':feedback' => $feedback, ':id' => $submissionId];
 
-        $upd = $pdo->prepare($sql);
-        $upd->execute($params);
-        $success = 'Grade and correction saved successfully!';
-    } else {
-        $error = 'Please select a submission and enter a grade.';
+            if ($correctionPath) {
+                $sql .= ', correction_path = :corr';
+                $params[':corr'] = $correctionPath;
+            }
+            $sql .= ' WHERE id = :id';
+
+            $upd = $pdo->prepare($sql);
+            $upd->execute($params);
+            $success = 'Grade and correction saved successfully!';
+        } else {
+            $error = 'Please select a submission and enter a grade.';
+        }
     }
 }
 
@@ -135,7 +199,7 @@ function gradeClass(?string $grade): string {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $role === 'student' ? 'My Grades' : 'Grade Work' ?> – EduPortal</title>
-    <link rel="stylesheet" href="../assets/style.css">
+    <link rel="stylesheet" href="/ass/assets/style.css">
     <style>
         .grade-modal-backdrop { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:2000; align-items:center; justify-content:center; }
         .grade-modal-backdrop.open { display:flex; }
@@ -146,12 +210,20 @@ function gradeClass(?string $grade): string {
         .assignment-group summary::marker { display: none; }
         .assignment-group[open] summary svg { transform: rotate(180deg); }
         .assignment-group summary svg { transition: transform .2s ease; }
-        
+
         /* Graded Highlighting */
         .row-graded { background-color: rgba(34, 197, 94, 0.05) !important; transition: background 0.3s ease; }
         .row-graded:hover { background-color: rgba(34, 197, 94, 0.08) !important; }
         .badge-success-lite { background: #dcfce7; color: #166534; font-weight: 600; border: 1px solid #bbf7d0; }
         .badge-pending-lite { background: #f1f5f9; color: #64748b; font-weight: 500; border: 1px solid #e2e8f0; }
+
+        /* Delete confirmation modal */
+        .delete-modal { max-width: 420px; }
+        .delete-modal .modal-icon { width:52px; height:52px; border-radius:50%; background:#fef2f2; display:flex; align-items:center; justify-content:center; margin:0 auto 1rem; font-size:1.5rem; }
+        .delete-modal p { text-align:center; color:var(--text-muted); font-size:.9rem; line-height:1.5; margin-bottom:1.5rem; }
+        .delete-modal h3 { text-align:center; }
+        .btn-danger { background: #dc2626; color: #fff; border: none; }
+        .btn-danger:hover { background: #b91c1c; }
     </style>
 </head>
 <body>
@@ -204,7 +276,7 @@ function gradeClass(?string $grade): string {
                                         <?php endif; ?>
                                         <?php if ($r['correction_path']): ?>
                                             <div style="margin-top: 0.5rem">
-                                                <a href="download.php?file=<?= urlencode($r['correction_path']) ?>&type=correction" class="btn btn-secondary btn-xs" style="background:var(--success-bg); color:var(--success); border-color:var(--success);">
+                                                <a href="/ass/download?file=<?= urlencode($r['correction_path']) ?>&type=correction" class="btn btn-secondary btn-xs" style="background:var(--success-bg); color:var(--success); border-color:var(--success);">
                                                     📥 Download Teacher's Correction
                                                 </a>
                                             </div>
@@ -280,7 +352,7 @@ function gradeClass(?string $grade): string {
                                                             </td>
                                                             <td class="text-muted"><?= date('M j, Y', strtotime($sub['submitted_at'])) ?></td>
                                                             <td>
-                                                                <a href="download.php?file=<?= urlencode($sub['file_path']) ?>&type=submission" class="btn btn-secondary btn-xs" target="_blank">Download</a>
+                                                                <a href="/ass/download?file=<?= urlencode($sub['file_path']) ?>&type=submission" class="btn btn-secondary btn-xs" target="_blank">Download</a>
                                                             </td>
                                                             <td>
                                                                 <?php if ($isGraded): ?>
@@ -296,14 +368,26 @@ function gradeClass(?string $grade): string {
                                                                     </div>
                                                                 <?php endif; ?>
                                                                 <?php if ($sub['correction_path']): ?>
-                                                                    <div style="margin-top:2px"><span style="color:var(--success);font-size:.65rem;font-weight:600">✓ Correction Uploaded</span></div>
+                                                                    <div style="margin-top:4px;display:flex;align-items:center;gap:.35rem;flex-wrap:wrap">
+                                                                        <span style="color:var(--success);font-size:.65rem;font-weight:600">✓ Correction Uploaded</span>
+                                                                        <button type="button"
+                                                                                class="btn btn-xs"
+                                                                                style="font-size:.6rem;padding:1px 6px;background:#fef2f2;color:#dc2626;border:1px solid #fecaca;line-height:1.4"
+                                                                                onclick="openDeleteCorrModal(<?= (int)$sub['id'] ?>, '<?= addslashes($sub['student_name']) ?>')">✕ Remove</button>
+                                                                    </div>
                                                                 <?php endif; ?>
                                                             </td>
-                                                            <td class="text-right">
-                                                                <button class="btn btn-primary btn-xs" 
+                                                            <td class="text-right" style="white-space:nowrap">
+                                                                <button class="btn btn-primary btn-xs"
                                                                         onclick="openModal(<?= (int)$sub['id'] ?>, '<?= addslashes($sub['student_name']) ?>', '<?= addslashes($a['assignment_title']) ?>', '<?= addslashes($sub['grade'] ?? '') ?>', '<?= addslashes($sub['feedback'] ?? '') ?>')">
                                                                     <?= $isGraded ? 'Edit' : 'Grade' ?>
                                                                 </button>
+                                                                <?php if ($isGraded): ?>
+                                                                <button class="btn btn-danger btn-xs" style="margin-left:.35rem"
+                                                                        onclick="openDeleteModal(<?= (int)$sub['id'] ?>, '<?= addslashes($sub['student_name']) ?>')">
+                                                                    Delete
+                                                                </button>
+                                                                <?php endif; ?>
                                                             </td>
                                                         </tr>
                                                     <?php endforeach; ?>
@@ -323,7 +407,8 @@ function gradeClass(?string $grade): string {
                 <div class="grade-modal">
                     <button class="modal-close" onclick="closeModal()" aria-label="Close">✕</button>
                     <h3 id="modalTitle">Grade Submission</h3>
-                    <form method="POST" action="grades.php" enctype="multipart/form-data">
+                    <form method="POST" action="/ass/grades" enctype="multipart/form-data">
+                        <input type="hidden" name="action" value="grade">
                         <input type="hidden" name="submission_id" id="modalSubId">
                         <div class="form-group">
                             <label class="form-label">Grade (e.g. A+, B, 85%)</label>
@@ -344,14 +429,48 @@ function gradeClass(?string $grade): string {
                     </form>
                 </div>
             </div>
+
+            <!-- Delete Submission Modal -->
+            <div class="grade-modal-backdrop" id="deleteModal">
+                <div class="grade-modal delete-modal">
+                    <div class="modal-icon">🗑️</div>
+                    <h3>Delete Submission?</h3>
+                    <p id="deleteModalMsg">This will permanently remove the student's submitted file and all associated data. This action cannot be undone.</p>
+                    <form method="POST" action="/ass/grades" id="deleteForm">
+                        <input type="hidden" name="action" value="delete">
+                        <input type="hidden" name="submission_id" id="deleteSubId">
+                        <div style="display:flex;gap:.75rem;justify-content:center">
+                            <button type="button" class="btn btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+                            <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Delete Correction Modal -->
+            <div class="grade-modal-backdrop" id="deleteCorrModal">
+                <div class="grade-modal delete-modal">
+                    <div class="modal-icon">📄</div>
+                    <h3>Remove Correction File?</h3>
+                    <p id="deleteCorrModalMsg">This will permanently delete the uploaded correction file for this student. The grade and feedback will stay. This action cannot be undone.</p>
+                    <form method="POST" action="/ass/grades">
+                        <input type="hidden" name="action" value="delete_correction">
+                        <input type="hidden" name="submission_id" id="deleteCorrSubId">
+                        <div style="display:flex;gap:.75rem;justify-content:center">
+                            <button type="button" class="btn btn-secondary" onclick="closeDeleteCorrModal()">Cancel</button>
+                            <button type="submit" class="btn btn-danger">Yes, Remove</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         <?php endif; ?>
     </main>
 </div>
 
 <script>
 function openModal(id, student, assignment, grade, feedback) {
-    document.getElementById('modalSubId').value   = id;
-    document.getElementById('modalGrade').value   = grade;
+    document.getElementById('modalSubId').value    = id;
+    document.getElementById('modalGrade').value    = grade;
     document.getElementById('modalFeedback').value = feedback;
     document.getElementById('modalTitle').textContent = `Grade: ${student} — ${assignment}`;
     document.getElementById('gradeModal').classList.add('open');
@@ -361,9 +480,40 @@ function closeModal() {
     document.getElementById('gradeModal').classList.remove('open');
 }
 
-// Close on backdrop click
 document.getElementById('gradeModal')?.addEventListener('click', function(e) {
     if (e.target === this) closeModal();
+});
+
+// ── Delete modal ──────────────────────────────────────────────
+function openDeleteModal(id, student) {
+    document.getElementById('deleteSubId').value = id;
+    document.getElementById('deleteModalMsg').textContent =
+        `Delete ${student}'s submission? This will permanently remove the submitted file and all grading data. This action cannot be undone.`;
+    document.getElementById('deleteModal').classList.add('open');
+}
+
+function closeDeleteModal() {
+    document.getElementById('deleteModal').classList.remove('open');
+}
+
+document.getElementById('deleteModal')?.addEventListener('click', function(e) {
+    if (e.target === this) closeDeleteModal();
+});
+
+// ── Delete correction modal ───────────────────────────────────
+function openDeleteCorrModal(id, student) {
+    document.getElementById('deleteCorrSubId').value = id;
+    document.getElementById('deleteCorrModalMsg').textContent =
+        `Remove the correction file for ${student}? The grade and feedback will be kept. This action cannot be undone.`;
+    document.getElementById('deleteCorrModal').classList.add('open');
+}
+
+function closeDeleteCorrModal() {
+    document.getElementById('deleteCorrModal').classList.remove('open');
+}
+
+document.getElementById('deleteCorrModal')?.addEventListener('click', function(e) {
+    if (e.target === this) closeDeleteCorrModal();
 });
 </script>
 </body>

@@ -9,7 +9,7 @@ session_start();
 
 // Redirect already-authenticated users straight to dashboard
 if (isset($_SESSION['user_id'])) {
-    header('Location: dashboard.php');
+    header('Location: /ass/dashboard');
     exit;
 }
 
@@ -51,9 +51,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Admins go to admin dashboard
             if ($user['role'] === 'admin') {
-                header('Location: admin/index.php');
+                header('Location: /ass/admin');
             } else {
-                header('Location: dashboard.php');
+                header('Location: /ass/dashboard');
             }
             exit;
         } else {
@@ -69,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login – EduPortal</title>
-    <link rel="stylesheet" href="../assets/style.css">
+    <link rel="stylesheet" href="/ass/assets/style.css">
 </head>
 <body>
 <div class="login-shell">
@@ -118,7 +118,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             <?php endif; ?>
 
-            <form method="POST" action="index.php" novalidate>
+            <form method="POST" action="/ass/" novalidate>
 
                 <div class="form-group">
                     <label class="form-label" for="email">Email Address</label>

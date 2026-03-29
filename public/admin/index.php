@@ -77,7 +77,7 @@ $totalSubmissions = $pdo->query('SELECT COUNT(*) FROM submissions')->fetchColumn
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel – EduPortal</title>
-    <link rel="stylesheet" href="../../assets/style.css">
+    <link rel="stylesheet" href="/ass/assets/style.css">
     <style>
         .role-badge-admin    { background:#f3e8ff; color:#7c3aed; }
         .role-badge-teacher  { background:#e0f2fe; color:#0369a1; }

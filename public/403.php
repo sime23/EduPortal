@@ -8,7 +8,7 @@ $user = $_SESSION['user'] ?? null;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>403 Forbidden – EduPortal</title>
-    <link rel="stylesheet" href="../assets/style.css">
+    <link rel="stylesheet" href="/ass/assets/style.css">
 </head>
 <body style="display:flex;align-items:center;justify-content:center;height:100vh;background:var(--bg-light)">
     <div class="card" style="max-width:480px;text-align:center;padding:3rem 2rem">

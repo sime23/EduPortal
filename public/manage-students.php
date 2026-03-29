@@ -230,6 +230,27 @@ if ($myClasses) {
         $classStudents[$row['class_id']][] = $row;
     }
 }
+
+// Helper: render a single student table row (used by both visible + overflow sections)
+function renderStudentRow(array $student, int $classId): void { ?>
+    <tr>
+        <td class="fw-600" style="font-size:0.9rem;"><?= htmlspecialchars($student['full_name']) ?></td>
+        <td class="text-muted" style="font-size:0.85rem;"><?= htmlspecialchars($student['email']) ?></td>
+        <td style="text-align:right;white-space:nowrap;">
+            <form method="POST" style="display:inline" onsubmit="return confirm('Remove student from this class?');">
+                <input type="hidden" name="action" value="remove_student">
+                <input type="hidden" name="class_id" value="<?= $classId ?>">
+                <input type="hidden" name="student_id" value="<?= $student['student_id'] ?>">
+                <button type="submit" class="btn btn-sm" style="background:#fee2e2;color:#dc2626;border:none;padding:.25rem .5rem" title="Remove from class">Remove</button>
+            </form>
+            <form method="POST" style="display:inline" onsubmit="return confirm('WARNING: This will permanently delete this student account and all their submissions. Are you sure?');">
+                <input type="hidden" name="action" value="delete_student">
+                <input type="hidden" name="student_id" value="<?= $student['student_id'] ?>">
+                <button type="submit" class="btn btn-sm" style="background:#ef4444;color:white;border:none;padding:.25rem .5rem;margin-left:.25rem" title="Delete account completely">Delete</button>
+            </form>
+        </td>
+    </tr>
+<?php }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -237,7 +258,7 @@ if ($myClasses) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Students - EduPortal</title>
-    <link rel="stylesheet" href="../assets/style.css">
+    <link rel="stylesheet" href="/ass/assets/style.css">
     <style>
         .class-card {
             background: white;
@@ -304,6 +325,41 @@ if ($myClasses) {
         }
         details.accordion .accordion-body {
             padding: 1.25rem;
+        }
+
+        /* Student overflow dropdown */
+        .students-overflow {
+            margin-top: 0;
+            border: none;
+            background: transparent;
+        }
+        .students-overflow summary {
+            display: flex;
+            align-items: center;
+            gap: .4rem;
+            cursor: pointer;
+            list-style: none;
+            font-size: .8rem;
+            font-weight: 600;
+            color: var(--primary);
+            padding: .55rem .75rem;
+            border-top: 1px dashed var(--border-light);
+            background: var(--bg-light);
+            border-radius: 0 0 var(--radius-md) var(--radius-md);
+            user-select: none;
+            transition: background .15s;
+        }
+        .students-overflow summary::-webkit-details-marker { display:none; }
+        .students-overflow summary .chev {
+            display: inline-block;
+            font-size: .65rem;
+            transition: transform .2s;
+        }
+        .students-overflow[open] summary .chev { transform: rotate(180deg); }
+        .students-overflow summary:hover { background: var(--bg-hover); }
+        .students-overflow[open] summary {
+            border-radius: 0;
+            border-bottom: 1px dashed var(--border-light);
         }
     </style>
 </head>
@@ -461,41 +517,52 @@ if ($myClasses) {
                                 </span>
                             </div>
                             <div class="class-card-body">
-                                <?php if (empty($classStudents[$c['id']])): ?>
+                                <?php
+                                    $stuList  = $classStudents[$c['id']] ?? [];
+                                    $stuCount = count($stuList);
+                                    $visible  = array_slice($stuList, 0, 5);
+                                    $hidden   = array_slice($stuList, 5);
+                                ?>
+                                <?php if ($stuCount === 0): ?>
                                     <p class="text-muted" style="font-size: 0.9rem;">No students assigned to this class.</p>
                                 <?php else: ?>
-                                    <div class="table-wrapper" style="max-height: 300px; overflow-y: auto;">
-                                        <table style="margin: 0;">
-                                            <thead style="position: sticky; top: 0; z-index: 10;">
+
+                                    <!-- Always-visible first 5 rows -->
+                                    <div class="table-wrapper">
+                                        <table style="margin:0;">
+                                            <thead>
                                                 <tr>
                                                     <th>Name</th>
                                                     <th>Email</th>
-                                                    <th style="text-align: right">Action</th>
+                                                    <th style="text-align:right">Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <?php foreach ($classStudents[$c['id']] as $student): ?>
-                                                    <tr>
-                                                        <td class="fw-600" style="font-size: 0.9rem;"><?= htmlspecialchars($student['full_name']) ?></td>
-                                                        <td class="text-muted" style="font-size: 0.85rem;"><?= htmlspecialchars($student['email']) ?></td>
-                                                        <td style="text-align: right; white-space: nowrap;">
-                                                            <form method="POST" style="display:inline" onsubmit="return confirm('Remove student from this class?');">
-                                                                <input type="hidden" name="action" value="remove_student">
-                                                                <input type="hidden" name="class_id" value="<?= $c['id'] ?>">
-                                                                <input type="hidden" name="student_id" value="<?= $student['student_id'] ?>">
-                                                                <button type="submit" class="btn btn-sm" style="background: #fee2e2; color: #dc2626; border: none; padding: 0.25rem 0.5rem;" title="Remove from class">Remove</button>
-                                                            </form>
-                                                            <form method="POST" style="display:inline" onsubmit="return confirm('WARNING: This will permanently delete this student account and all their submissions. Are you sure?');">
-                                                                <input type="hidden" name="action" value="delete_student">
-                                                                <input type="hidden" name="student_id" value="<?= $student['student_id'] ?>">
-                                                                <button type="submit" class="btn btn-sm" style="background: #ef4444; color: white; border: none; padding: 0.25rem 0.5rem; margin-left: 0.25rem;" title="Delete account completely">Delete</button>
-                                                            </form>
-                                                        </td>
-                                                    </tr>
+                                                <?php foreach ($visible as $student): ?>
+                                                    <?php renderStudentRow($student, $c['id']); ?>
                                                 <?php endforeach; ?>
                                             </tbody>
                                         </table>
                                     </div>
+
+                                    <!-- Overflow dropdown (only when > 5 students) -->
+                                    <?php if (!empty($hidden)): ?>
+                                        <details class="students-overflow">
+                                            <summary>
+                                                <span class="chev">▼</span>
+                                                Show <?= count($hidden) ?> more student<?= count($hidden) > 1 ? 's' : '' ?>…
+                                            </summary>
+                                            <div class="table-wrapper">
+                                                <table style="margin:0;">
+                                                    <tbody>
+                                                        <?php foreach ($hidden as $student): ?>
+                                                            <?php renderStudentRow($student, $c['id']); ?>
+                                                        <?php endforeach; ?>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </details>
+                                    <?php endif; ?>
                                 <?php endif; ?>
                             </div>
                         </div>
