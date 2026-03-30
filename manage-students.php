@@ -87,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $hasFormatError = false;
 
                 // Process CSV row by row
-                while (($data = fgetcsv($handle, 1000, ',')) !== false) {
+                while (($data = fgetcsv($handle, 1000, ',', '"', '\\')) !== false) {
                     $rowNum++;
                     // Skip completely empty rows
                     if (empty(array_filter($data))) continue;
