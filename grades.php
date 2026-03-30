@@ -47,10 +47,10 @@ if (($role === 'teacher' || $isAdmin) && $_SERVER['REQUEST_METHOD'] === 'POST') 
             if ($corrFile && file_exists($corrFile)) @unlink($corrFile);
 
             // Soft-delete: clear the file paths but KEEP the grade & feedback
-            // so students can still see their result in the Grades page.
+            // Set to empty string '' instead of NULL to bypass strict MySQL schemas
             $pdo->prepare('
                 UPDATE submissions
-                SET file_path = NULL, correction_path = NULL
+                SET file_path = "", correction_path = NULL
                 WHERE id = :id
             ')->execute([':id' => $submissionId]);
             $success = 'Submission files removed. The student\'s grade and feedback are still visible to them.';
