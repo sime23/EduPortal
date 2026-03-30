@@ -102,9 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     View grades and feedback instantly
                 </div>
             </div>
-            <p style="margin-top:2.5rem;font-size:0.75rem;color:rgba(255,255,255,0.35)">
-                Demo — teacher@demo.com / student@demo.com<br>Password: password123
-            </p>
+
         </div>
     </div>
 

@@ -1328,12 +1328,34 @@ tbody td {
     padding-top: calc(60px + 1.25rem);
   }
 
+  .login-shell {
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+
   .login-visual {
-    display: none;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    padding: 0;
+  }
+
+  .login-visual-content {
+    display: none; /* Hide the text to reduce clutter on small screens */
   }
 
   .login-form-panel {
-    width: 100%;
+    width: 90%;
+    max-width: 400px;
+    padding: 2rem;
+    position: relative;
+    z-index: 10;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+    height: auto;
   }
 
   .stats-row {
