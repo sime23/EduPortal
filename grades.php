@@ -38,7 +38,7 @@ if (($role === 'teacher' || $isAdmin) && $_SERVER['REQUEST_METHOD'] === 'POST') 
         $target = $check->fetch();
 
         if ($target) {
-            // Remove physical files
+            // Remove physical files from disk
             $subFile  = __DIR__ . '/uploads/submissions/' . $target['file_path'];
             $corrFile = $target['correction_path']
                         ? __DIR__ . '/uploads/corrections/' . $target['correction_path']
@@ -46,9 +46,14 @@ if (($role === 'teacher' || $isAdmin) && $_SERVER['REQUEST_METHOD'] === 'POST') 
             if (file_exists($subFile))  @unlink($subFile);
             if ($corrFile && file_exists($corrFile)) @unlink($corrFile);
 
-            // Delete DB record
-            $pdo->prepare('DELETE FROM submissions WHERE id = :id')->execute([':id' => $submissionId]);
-            $success = 'Submission deleted successfully.';
+            // Soft-delete: clear the file paths but KEEP the grade & feedback
+            // so students can still see their result in the Grades page.
+            $pdo->prepare('
+                UPDATE submissions
+                SET file_path = NULL, correction_path = NULL
+                WHERE id = :id
+            ')->execute([':id' => $submissionId]);
+            $success = 'Submission files removed. The student\'s grade and feedback are still visible to them.';
         } else {
             $error = 'Cannot delete: submission not found, not graded, or not yours.';
         }
