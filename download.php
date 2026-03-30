@@ -19,13 +19,13 @@ if (empty($file) || strpos($file, '..') !== false || strpos($file, '/') !== fals
 
 $baseDir = '';
 if ($type === 'assignment') {
-    $baseDir = '../uploads/assignments/';
+    $baseDir = 'uploads/assignments/';
 } elseif ($type === 'submission') {
-    $baseDir = '../uploads/submissions/'; 
+    $baseDir = 'uploads/submissions/';
 } elseif ($type === 'correction') {
-    $baseDir = '../uploads/corrections/'; 
+    $baseDir = 'uploads/corrections/';
 } elseif ($type === 'master_correction') {
-    $baseDir = '../uploads/master_corrections/'; 
+    $baseDir = 'uploads/master_corrections/';
 } else {
     die("Invalid file type.");
 }
