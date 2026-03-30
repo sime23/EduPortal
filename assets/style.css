@@ -1348,6 +1348,9 @@ tbody td {
   }
 
   .login-form-panel {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
     width: 90%;
     max-width: 400px;
     padding: 2rem;
