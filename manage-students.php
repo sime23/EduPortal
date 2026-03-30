@@ -198,6 +198,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute([$studentId]);
             $success = 'Student account permanently deleted.';
         }
+    } elseif ($action === 'delete_class') {
+        $classId = (int)($_POST['class_id'] ?? 0);
+        if ($classId) {
+            // Verify the class belongs to this teacher
+            $stmt = $pdo->prepare('SELECT id FROM classes WHERE id = ? AND teacher_id = ?');
+            $stmt->execute([$classId, $userId]);
+            if ($stmt->fetch()) {
+                // Remove all students from the class first
+                $pdo->prepare('DELETE FROM class_students WHERE class_id = ?')->execute([$classId]);
+                // Remove all assignments linked to this class
+                $pdo->prepare('DELETE FROM assignments WHERE class_id = ?')->execute([$classId]);
+                // Delete the class itself
+                $pdo->prepare('DELETE FROM classes WHERE id = ?')->execute([$classId]);
+                $success = 'Class deleted successfully.';
+            } else {
+                $error = 'Class not found or you do not have permission to delete it.';
+            }
+        }
     }
 }
 
@@ -512,9 +530,19 @@ function renderStudentRow(array $student, int $classId): void { ?>
                         <div class="class-card">
                             <div class="class-card-header">
                                 <h4 style="margin: 0; font-size: 1.1rem; color: var(--text-primary);"><?= htmlspecialchars($c['class_name']) ?></h4>
-                                <span class="badge" style="background: var(--bg-hover); color: var(--text-secondary);">
-                                    <?= count($classStudents[$c['id']] ?? []) ?> Students
-                                </span>
+                                <div style="display:flex;align-items:center;gap:.75rem">
+                                    <span class="badge" style="background: var(--bg-hover); color: var(--text-secondary);">
+                                        <?= count($classStudents[$c['id']] ?? []) ?> Students
+                                    </span>
+                                    <form method="POST" style="margin:0" onsubmit="return confirm('Delete class &quot;<?= htmlspecialchars(addslashes($c['class_name'])) ?>&quot;?\nThis will also remove all its assignments and student enrollments. This cannot be undone.');">
+                                        <input type="hidden" name="action" value="delete_class">
+                                        <input type="hidden" name="class_id" value="<?= (int)$c['id'] ?>">
+                                        <button type="submit" class="btn btn-sm" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;display:flex;align-items:center;gap:.3rem;padding:.3rem .65rem;font-size:.8rem;" title="Delete this class">
+                                            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+                                            Delete Class
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                             <div class="class-card-body">
                                 <?php
