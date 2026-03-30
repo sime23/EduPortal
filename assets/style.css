@@ -1335,29 +1335,32 @@ tbody td {
   }
 
   .login-visual {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
+    display: flex !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
     z-index: 0;
     padding: 0;
   }
 
   .login-visual-content {
-    display: none; /* Hide the text to reduce clutter on small screens */
+    display: none !important; /* Hide the text to reduce clutter on small screens */
   }
 
   .login-form-panel {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.4);
     width: 90%;
     max-width: 400px;
-    padding: 2rem;
+    padding: 2.5rem 2rem;
     position: relative;
     z-index: 10;
     border-radius: var(--radius-lg);
-    box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.25);
     height: auto;
   }
 
