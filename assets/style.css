@@ -1360,12 +1360,37 @@ tbody td {
     padding: 2.5rem 2rem;
     height: auto;
     
-    background: rgba(255, 255, 255, 0.45);
+    background: rgba(255, 255, 255, 0.1); /* Ultra transparent */
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: var(--radius-lg);
-    box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    color: var(--white);
+  }
+
+  /* Ensure text is readable on dark transparent backgrounds */
+  .login-form-panel h2,
+  .login-form-panel p,
+  .login-form-panel .form-label {
+    color: var(--white);
+  }
+
+  /* Glassmorphic inputs for maximum aesthetic */
+  .login-form-panel .form-control {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.25);
+    color: var(--white);
+  }
+
+  .login-form-panel .form-control::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .login-form-panel .form-control:focus {
+    border-color: var(--cyan);
+    box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.2);
+    background: rgba(255, 255, 255, 0.12);
   }
 
   .stats-row {
