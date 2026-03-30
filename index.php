@@ -75,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <div class="login-shell">
 
     <!-- Left decorative panel -->
-    <div class="login-visual" style="position: relative;">
+    <div class="login-visual">
         <!-- Spline 3D Background -->
         <spline-viewer url="https://prod.spline.design/Oc1uJe9MNub3kmWm/scene.splinecode" style="position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; display: block;"></spline-viewer>
         
