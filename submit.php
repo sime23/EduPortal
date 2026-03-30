@@ -60,15 +60,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $finfo    = new finfo(FILEINFO_MIME_TYPE);
             $mimeType = $finfo->file($file['tmp_name']);
 
+            // Linux libmagic returns several variants for the same file type.
+            // PDFs may be 'application/x-pdf'; DOCX may be 'application/zip'
+            // (since DOCX is a ZIP container). Cover all real-world cases.
             $allowedMimes = [
                 'application/pdf',
+                'application/x-pdf',
                 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
                 'application/msword',
+                'application/zip',         // DOCX files are ZIP containers
+                'application/octet-stream', // generic binary – finfo fallback
             ];
             $allowedExts  = ['pdf', 'docx', 'doc'];
             $fileExt      = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
 
-            if (!in_array($mimeType, $allowedMimes) || !in_array($fileExt, $allowedExts)) {
+            // Reject only when BOTH the extension AND the MIME type are unrecognised.
+            // Prevents false rejections when finfo returns an unexpected variant
+            // for an otherwise valid PDF or DOCX file.
+            if (!in_array($fileExt, $allowedExts) && !in_array($mimeType, $allowedMimes)) {
                 $error = 'Only PDF and DOCX files are accepted.';
             } elseif (strtotime($assignment['deadline']) < time()) {
                 $error = 'The deadline for this assignment has already passed. Submissions are closed.';
