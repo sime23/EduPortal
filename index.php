@@ -72,45 +72,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="/assets/style.css">
 </head>
 <body>
-<div class="login-shell">
+<div class="login-shell" style="position: relative; background: linear-gradient(160deg, #0D2137 0%, #01579B 50%, #006064 100%); display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden;">
 
-    <!-- Left decorative panel -->
-    <div class="login-visual">
-        <!-- Spline 3D Background -->
-        <spline-viewer url="https://prod.spline.design/Oc1uJe9MNub3kmWm/scene.splinecode" style="position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; display: block;"></spline-viewer>
-        
-        <div class="login-visual-content" style="position: relative; z-index: 1; pointer-events: none;">
-            <div class="login-visual-logo">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
-                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
-                </svg>
+    <!-- Fullscreen Spline 3D Background -->
+    <spline-viewer url="https://prod.spline.design/Oc1uJe9MNub3kmWm/scene.splinecode" style="position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; display: block;"></spline-viewer>
+
+    <!-- Centered Form Panel -->
+    <div class="login-form-panel" style="position: relative; z-index: 10; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); width: 90%; max-width: 420px; padding: 2.5rem; border: 1px solid rgba(255, 255, 255, 0.4);">
+        <div class="login-form-inner" style="width: 100%;">
+            
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <!-- Logo -->
+                <div style="width: 50px; height: 50px; background: linear-gradient(135deg, var(--cyan), var(--cyan-dark)); border-radius: 14px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 1rem; box-shadow: 0 4px 10px rgba(0,188,212,0.3);">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" style="width: 26px; height: 26px;">
+                        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+                    </svg>
+                </div>
+                <h2 style="font-size: 1.5rem; font-weight: 700; color: #1A2332; margin-bottom: 0.25rem;">EduPortal</h2>
+                <p style="color: #64748B; font-size: 0.9rem;">Sign in to continue</p>
             </div>
-            <h1>EduPortal</h1>
-            <p>Your centralized assignment management platform</p>
-            <div class="login-features">
-                <div class="login-feature">
-                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m9 12 2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
-                    Submit assignments securely
-                </div>
-                <div class="login-feature">
-                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                    Track deadlines at a glance
-                </div>
-                <div class="login-feature">
-                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                    View grades and feedback instantly
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- Right form panel -->
-    <div class="login-form-panel">
-        <div class="login-form-inner">
-            <h2>Welcome back</h2>
-            <p>Sign in to continue to your portal</p>
 
             <?php if ($error): ?>
                 <div class="alert alert-error">
