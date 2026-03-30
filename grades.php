@@ -39,9 +39,9 @@ if (($role === 'teacher' || $isAdmin) && $_SERVER['REQUEST_METHOD'] === 'POST') 
 
         if ($target) {
             // Remove physical files
-            $subFile  = __DIR__ . '/../uploads/submissions/' . $target['file_path'];
+            $subFile  = __DIR__ . '/uploads/submissions/' . $target['file_path'];
             $corrFile = $target['correction_path']
-                        ? __DIR__ . '/../uploads/corrections/' . $target['correction_path']
+                        ? __DIR__ . '/uploads/corrections/' . $target['correction_path']
                         : null;
             if (file_exists($subFile))  @unlink($subFile);
             if ($corrFile && file_exists($corrFile)) @unlink($corrFile);
@@ -70,7 +70,7 @@ if (($role === 'teacher' || $isAdmin) && $_SERVER['REQUEST_METHOD'] === 'POST') 
         $target = $check->fetch();
 
         if ($target) {
-            $corrFile = __DIR__ . '/../uploads/corrections/' . $target['correction_path'];
+            $corrFile = __DIR__ . '/uploads/corrections/' . $target['correction_path'];
             if (file_exists($corrFile)) @unlink($corrFile);
             $pdo->prepare('UPDATE submissions SET correction_path = NULL WHERE id = :id')
                 ->execute([':id' => $submissionId]);
@@ -93,7 +93,7 @@ if (($role === 'teacher' || $isAdmin) && $_SERVER['REQUEST_METHOD'] === 'POST') 
                 $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
                 if (in_array($ext, ['pdf', 'docx', 'doc', 'zip'])) {
                     $newName = 'corr_' . $submissionId . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
-                    $targetDir = __DIR__ . '/../uploads/corrections/';
+                    $targetDir = __DIR__ . '/uploads/corrections/';
                     if (!is_dir($targetDir)) mkdir($targetDir, 0777, true);
                     if (move_uploaded_file($file['tmp_name'], $targetDir . $newName)) {
                         $correctionPath = $newName;

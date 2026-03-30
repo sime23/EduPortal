@@ -78,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $dupCheck->execute([':aid' => $assignmentId, ':uid' => $userId]);
                     $existing = $dupCheck->fetch();
 
-                    $uploadDir  = '../uploads/submissions/';
+                    $uploadDir  = __DIR__ . '/uploads/submissions/';
                     if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
                     $safeName   = 'sub_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $fileExt;
                     $uploadPath = $uploadDir . $safeName;

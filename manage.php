@@ -66,8 +66,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         // Handle files
         $attachmentName = null;
         $masterName     = null;
-        $uploadDir      = '../uploads/assignments/';
-        $masterDir      = '../uploads/master_corrections/';
+        $uploadDir      = __DIR__ . '/uploads/assignments/';
+        $masterDir      = __DIR__ . '/uploads/master_corrections/';
 
         if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
         if (!is_dir($masterDir)) mkdir($masterDir, 0777, true);
