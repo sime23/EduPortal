@@ -1413,9 +1413,17 @@ tbody td {
   }
 }
 
-/* ── Spline Viewer ──────────────────────────────────────────── */
-spline-viewer::part(logo) {
-  display: none !important;
+/* ── Spline Viewer Watermark Removal Trick ───────────── */
+spline-viewer {
+  /* Surgically cuts out the bottom-right 160x50 corner where the logo renders */
+  clip-path: polygon(
+    0 0, 
+    100% 0, 
+    100% calc(100% - 50px), 
+    calc(100% - 160px) calc(100% - 50px), 
+    calc(100% - 160px) 100%, 
+    0 100%
+  );
 }
 
 /* ── Animations ─────────────────────────────────────────────── */
