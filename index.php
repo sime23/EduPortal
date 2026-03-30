@@ -75,8 +75,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <div class="login-shell">
 
     <!-- Left decorative panel -->
-    <div class="login-visual">
-        <div class="login-visual-content">
+    <div class="login-visual" style="position: relative;">
+        <!-- Spline 3D Background -->
+        <spline-viewer url="https://prod.spline.design/l3QUlEKAglOKj1xb/scene.splinecode" style="position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; display: block;"></spline-viewer>
+        
+        <div class="login-visual-content" style="position: relative; z-index: 1; pointer-events: none;">
             <div class="login-visual-logo">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
@@ -161,6 +164,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 </div>
 
+<script type="module" src="https://unpkg.com/@splinetool/viewer@1.12.73/build/spline-viewer.js"></script>
 <script>
 // No Javascript role handling required anymore
 
