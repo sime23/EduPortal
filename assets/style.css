@@ -1329,39 +1329,43 @@ tbody td {
   }
 
   .login-shell {
-    justify-content: center;
-    align-items: center;
     position: relative;
+    display: block; /* Disable flexbox quirks on mobile */
+    min-height: 100vh;
+    overflow: hidden;
   }
 
   .login-visual {
-    display: flex !important;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
+    position: relative !important;
+    top: auto;
+    left: auto;
+    width: 100% !important;
+    height: 100vh !important;
     z-index: 0;
-    padding: 0;
+    display: block !important;
   }
 
   .login-visual-content {
-    display: none !important; /* Hide the text to reduce clutter on small screens */
+    display: none !important;
   }
 
   .login-form-panel {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    width: 90%;
+    max-width: 400px;
+    padding: 2.5rem 2rem;
+    height: auto;
+    
     background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.4);
-    width: 90%;
-    max-width: 400px;
-    padding: 2.5rem 2rem;
-    position: relative;
-    z-index: 10;
     border-radius: var(--radius-lg);
     box-shadow: 0 15px 40px rgba(0,0,0,0.25);
-    height: auto;
   }
 
   .stats-row {
