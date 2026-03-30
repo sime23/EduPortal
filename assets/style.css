@@ -1413,6 +1413,11 @@ tbody td {
   }
 }
 
+/* ── Spline Viewer ──────────────────────────────────────────── */
+spline-viewer::part(logo) {
+  display: none !important;
+}
+
 /* ── Animations ─────────────────────────────────────────────── */
 @keyframes fadeSlideUp {
   from {
