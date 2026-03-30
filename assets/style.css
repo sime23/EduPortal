@@ -1415,13 +1415,13 @@ tbody td {
 
 /* ── Spline Viewer Watermark Removal Trick ───────────── */
 spline-viewer {
-  /* Surgically cuts out the bottom-right 160x50 corner where the logo renders */
+  /* Surgically cuts out the bottom-right 180x80 corner where the logo renders */
   clip-path: polygon(
     0 0, 
     100% 0, 
-    100% calc(100% - 50px), 
-    calc(100% - 160px) calc(100% - 50px), 
-    calc(100% - 160px) 100%, 
+    100% calc(100% - 80px), 
+    calc(100% - 180px) calc(100% - 80px), 
+    calc(100% - 180px) 100%, 
     0 100%
   );
 }
