@@ -19,7 +19,7 @@ $error = '';
 
 // ── POST: Process login form ─────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Sanitize inputs (PDO handles injection; trim handles whitespace)
+    // Sanitize inputs (PDO handles injection; trim handles whitespace of input)
     $email    = trim($_POST['email']    ?? '');
     $password = trim($_POST['password'] ?? '');
 
